@@ -2,6 +2,18 @@
 
 # awk -v n=100 -v seed="$RANDOM" 'BEGIN { srand(seed); for (i=0; i<n; ++i) printf("%.2f\n", rand()*1000) }' > random.txt
 
+printArray() {
+    arr=("$@")
+
+    for i in "${arr[@]}"; do
+        echo "x $i"
+    done
+}
+
+writeSortedArray() {
+    arr=("$@")
+    printf "%s\n" "${arr[@]}" > sortedRandom.txt
+}
 
 insertionSort() {
     echo "insertionSort"
@@ -21,14 +33,6 @@ insertionSort() {
         arr[j+1]=$temp
     done
 
-
-
-
-    echo "done"
-
-    for i in "${arr[@]}"; do
-        echo "x $i"
-    done
 
 }
 
