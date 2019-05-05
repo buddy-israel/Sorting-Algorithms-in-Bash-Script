@@ -1,6 +1,6 @@
 #!/bin/bash
 
-# awk -v n=100 -v seed="$RANDOM" 'BEGIN { srand(seed); for (i=0; i<n; ++i) printf("%.2f\n", rand()*1000) }' > random.txt
+# awk -v n=10 -v seed="$RANDOM" 'BEGIN { srand(seed); for (i=0; i<n; ++i) printf("%.2f\n", rand()*1000) }' > random.txt
 
 printArray() {
     arr=("$@")
@@ -16,12 +16,9 @@ writeSortedArray() {
 }
 
 insertionSort() {
-    echo "insertionSort"
 
     arr=("$@")
     n=${#arr[@]}
-
-    # logic for insertion sort   $(echo "arr[j] > temp" |bc -l)
 
     for((i=1;i<n;i++)) ; do
         j=$i-1
@@ -36,8 +33,33 @@ insertionSort() {
     writeSortedArray "${arr[@]}"
 }
 
+merge() {
+    local first=2
+    local second=$(( $1 + 2 ))
+	for i in ${@:2} ; do
+    	if [[ $first -eq $(( $1 + 2 )) ]] ;	then
+    		echo ${@:$second:1} ; ((second += 1))
+    	else
+    		if [[ $second -eq $(( ${#@} + 1 )) ]] ; then
+    				echo ${@:$first:1} ; ((first += 1))
+    		else
+    			if [[ ${@:$first:1} -lt ${@:$second:1} ]] ; then
+    				echo ${@:$first:1} ; ((first += 1))
+    			else
+    				echo ${@:$second:1} ; ((second += 1))
+    			fi
+    		fi
+		fi
+	done
+}
+
 mergeSort() {
     echo "mergeSort"
+
+    local med=$(( $1 / 2 ))
+	local first=( $(mergeSort $med ${@:2:$med}) )
+	local second=( $(mergeSort $(( $1 - $med )) ${@:$(( $med + 2 )):$(( $1 - $med ))}) )
+    echo $(merge $med ${first[@]} ${second[@]})
 }
 
 heapSort() {
@@ -55,7 +77,6 @@ countingSort() {
 bucketSort() {
     echo "bucketSort"
 }
-
 
 fun_read_array() {
     arr=("$@")
@@ -82,9 +103,11 @@ else
                 numbersArray+=( "$line" )
             done < "$2"
 
+            n=${#numbersArray[@]}
+
             case $4 in
                 1) insertionSort "${numbersArray[@]}" ;;
-                2) mergeSort "${numbersArray[@]}" ;;
+                2) mergeSort n "${numbersArray[@]}" ;;
                 3) heapSort "${numbersArray[@]}" ;;
                 4) quickSort "${numbersArray[@]}" ;;
                 5) countingSort "${numbersArray[@]}" ;;
