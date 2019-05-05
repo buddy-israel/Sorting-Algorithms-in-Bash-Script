@@ -85,16 +85,22 @@ merge() { # $1 -> p   $2 -> q    $3 -> r  $4...n  -> arr
 
     arr= ${@:3:$n}
 
-    n1= $(( $q - $p + 1 ))
-    n2= $(( $r - $q ))
+    echo "p = $p"
+    echo "q = $q"
+    echo "r = $r"
 
-    for (( i = 1; i <= $n1; i++ )); do
-        left[i]= ${arr[ $(( $p + $i  - 1 )) ]}
-    done
+    echo "arr = $arr"
 
-    for (( i = 1; i <= $n2; i++ )); do
-        right[i]= ${arr[ $(( $q + $i )) ]}
-    done
+    # n1= $(( $q - $p + 1 ))
+    # n2= $(( $r - $q ))
+    #
+    # for (( i = 1; i <= $n1; i++ )); do
+    #     left[i]= ${arr[ $(( $p + $i  - 1 )) ]}
+    # done
+    #
+    # for (( i = 1; i <= $n2; i++ )); do
+    #     right[i]= ${arr[ $(( $q + $i )) ]}
+    # done
 }
 
 mergeSort() {
@@ -104,7 +110,7 @@ mergeSort() {
         q=$(( ($1 + $2)/2 ))
         # mergeSort $1 $q ${@:3:$n}
         # mergeSort $(($q + 1) $2 ${@:3:$n}
-        # merge $1 $q $2 ${@:3:$n}
+        merge $1 $q $2 ${@:3:$n}
     fi
 }
 
