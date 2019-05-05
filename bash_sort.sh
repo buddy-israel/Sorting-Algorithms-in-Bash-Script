@@ -33,7 +33,7 @@ insertionSort() {
         arr[j+1]=$temp
     done
 
-
+    writeSortedArray "${arr[@]}"
 }
 
 mergeSort() {
