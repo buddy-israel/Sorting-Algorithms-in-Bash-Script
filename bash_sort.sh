@@ -2,6 +2,8 @@
 
 # awk -v n=10 -v seed="$RANDOM" 'BEGIN { srand(seed); for (i=0; i<n; ++i) printf("%.2f\n", rand()*1000) }' > random.txt
 
+declare -a arrToSort
+
 printArray() {
     arr=("$@")
 
@@ -69,9 +71,131 @@ mergeSort() {
     fi
 }
 
-heapSort() {
-    echo "heapSort"
+
+
+#
+# max() {
+#
+#     m=$2
+#     if [[ $3 -eq $1 && $(echo "${arrToSort[$3]} < ${arrToSort[$m]}" | bc -l) ]]; then
+#         m=$3
+#     fi
+#     if [[ $4 -eq $1 && $(echo "${arrToSort[$4]} < ${arrToSort[$m]}" | bc -l) ]]; then
+#         m=$4
+#     fi
+#     echo $m
+# }
+#
+# downHeap() {
+#
+#     i=$2
+#     while true ; do
+#         j=$(max $1 $i $(( 2 * $i + 1 )) $(( 2 * $i + 2 )) )
+#
+#         if [[ $j -eq $i  ]]; then
+#             break
+#         fi
+#         t=${arrToSort[$i]}
+#         arrToSort[$i]=${arrToSort[$j]}
+#         arrToSort[$j]=$t
+#         i=$j
+#
+#     done
+# }
+#
+# heapSortx() {
+#     n=$1
+#
+#     for (( (( i = ($n - 2)/2 )); i >= 0; i-- )); do
+#         downHeap $n $i
+#     done
+#
+#     for (( i = 0; i < $n; i++ )); do
+#         (( index = $n - $i - 1))
+#         t=${arrToSort[$index]}
+#         arrToSort[$index]=${arrToSort[1]}
+#         arrToSort[1]=$t
+#         downHeap $n $index
+#     done
+#
+#     # printArray "${arr[@]}"
+# }
+
+
+
+
+
+
+
+maxHeapify() {
+
+    arr="${@:3}"
+    local i=$1
+    (( L = 2 * i ))
+    (( R = 2 * i + 1 ))
+
+    largest=$i
+
+    if [[ $L -le $2 && $(echo "${arr[$L]} > ${arr[$i]}" | bc -l) ]]; then
+        largest=$L
+    fi
+
+    if [[ $R -le $2 && $(echo "${arr[$R]} > ${arr[$largest]}" | bc -l) ]]; then
+        largest=$L
+    fi
+    if [[ $largest -ne $i ]]; then
+
+        tmp=${arr[largest]}
+        arr[largest]=${arr[i]}
+        arr[i]=$tmp
+
+        echo "$(maxHeapify $largest $2 "${arr[@]}")"
+    fi
 }
+
+
+
+
+
+
+buildMaxHeap() {
+
+    arr=("$@")
+    n=${#arr[@]}
+
+    local heapMaxIdx=$n
+
+    for (( i = (( heapMaxIdx/2 )); i >= 1; i-- )); do
+        echo "$(maxHeapify $i $heapMaxIdx "${arr[@]}")"
+    done
+}
+
+
+heapSort() {
+
+    arr=("$@")
+    n=${#arr[@]}
+
+    printArray "${arr[@]}"
+    echo "--------"
+
+    local heapMaxIdx=$n
+    local maxHeap=( $(buildMaxHeap "${arr[@]}") )
+
+    for (( i = $n; i > 1; i-- )); do
+
+        tmp=${arr[1]}
+        arr[1]=${arr[i]}
+        arr[i]=$tmp
+
+        (( heapMaxIdx-- ))
+        echo "$( maxHeapify 1 $heapMaxIdx "${maxHeap[@]}")"
+    done
+    # printArray "${arr[@]}"
+}
+
+
+
 
 quickSort() {
     echo "quickSort"
@@ -83,13 +207,6 @@ countingSort() {
 
 bucketSort() {
     echo "bucketSort"
-}
-
-fun_read_array() {
-    arr=("$@")
-    for i in "${arr[@]}" ; do
-        echo $i
-    done
 }
 
 if [[ "$#" -ne 4 ]]; then
@@ -115,7 +232,9 @@ else
             case $4 in
                 1) insertionSort "${numbersArray[@]}" ;;
                 2) mergeSort $n "${numbersArray[@]}" > sortedRandom.txt ;;
-                3) heapSort "${numbersArray[@]}" ;;
+                3) #arrToSort=${numbersArray[@]}
+                   heapSort "${numbersArray[@]}" ;;
+                   #printArray "${arrToSort[@]}" ;;
                 4) quickSort "${numbersArray[@]}" ;;
                 5) countingSort "${numbersArray[@]}" ;;
                 6) bucketSort "${numbersArray[@]}" ;;
