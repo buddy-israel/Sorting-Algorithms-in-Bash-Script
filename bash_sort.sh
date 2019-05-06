@@ -126,74 +126,134 @@ mergeSort() {
 
 
 
+#
+# maxHeapify() {
+#
+#     arr="${@:3}"
+#     local i=$1
+#     (( L = 2 * i ))
+#     (( R = 2 * i + 1 ))
+#
+#     largest=$i
+#
+#     if [[ $L -le $2 && $(echo "${arr[$L]} > ${arr[$i]}" | bc -l) ]]; then
+#         largest=$L
+#     fi
+#
+#     if [[ $R -le $2 && $(echo "${arr[$R]} > ${arr[$largest]}" | bc -l) ]]; then
+#         largest=$L
+#     fi
+#     if [[ $largest -ne $i ]]; then
+#
+#         tmp=${arr[largest]}
+#         arr[largest]=${arr[i]}
+#         arr[i]=$tmp
+#         arr=( $(maxHeapify $largest $2 "${arr[@]}") )
+#     fi
+#     echo "${arr[@]}"
+# }
+#
+#
+#
+#
+#
+#
+# buildMaxHeap() {
+#
+#     arr=("$@")
+#     n=${#arr[@]}
+#
+#     local heapMaxIdx=$n
+#
+#     for (( i = (( heapMaxIdx/2 )); i >= 1; i-- )); do
+#         echo "$(maxHeapify $i $heapMaxIdx "${arr[@]}")"
+#     done
+# }
+#
+#
+# heapSort() {
+#
+#     arr=("$@")
+#     n=${#arr[@]}
+#
+#     printArray "${arr[@]}"
+#     echo "--------"
+#
+#     local heapMaxIdx=$n
+#     local maxHeap=( $(buildMaxHeap "${arr[@]}") )
+#
+#     for (( i = $n; i > 1; i-- )); do
+#
+#         tmp=${arr[1]}
+#         arr[1]=${arr[i]}
+#         arr[i]=$tmp
+#
+#         (( heapMaxIdx-- ))
+#         echo "$( maxHeapify 1 $heapMaxIdx "${maxHeap[@]}" )"
+#     done
+#     # printArray "${arr[@]}"
+# }
 
-maxHeapify() {
 
-    arr="${@:3}"
-    local i=$1
-    (( L = 2 * i ))
-    (( R = 2 * i + 1 ))
 
-    largest=$i
+heapify() {  # $1 -> n  $2 -> i   $3 ...  -> arr
+    local n=$1
+    local i=$2
+    local arr=("${@:3}")
 
-    if [[ $L -le $2 && $(echo "${arr[$L]} > ${arr[$i]}" | bc -l) ]]; then
-        largest=$L
+    local largest=$i
+
+    local l=$(( 2 * $i + 1 ))     # l = 2 * i + 1
+    local r=$(( 2 * $i + 2 ))  # r = 2 * i + 2
+
+
+
+    if [[ $l -lt $n && $(echo "${arr[$i]} < ${arr[$l]}" | bc -l) ]]; then
+        largest=$l
     fi
 
-    if [[ $R -le $2 && $(echo "${arr[$R]} > ${arr[$largest]}" | bc -l) ]]; then
-        largest=$L
+    if [[ $r -lt $n && $(echo "${arr[$largest]} < ${arr[$r]}" | bc -l) ]]; then
+        largest=$r
     fi
-    if [[ $largest -ne $i ]]; then
 
+    if [[ $largest != $i ]]; then
         tmp=${arr[largest]}
         arr[largest]=${arr[i]}
         arr[i]=$tmp
 
-        echo "$(maxHeapify $largest $2 "${arr[@]}")"
+        arr=( $(heapify $n $largest "${arr[@]}") )
     fi
-}
 
-
-
-
-
-
-buildMaxHeap() {
-
-    arr=("$@")
-    n=${#arr[@]}
-
-    local heapMaxIdx=$n
-
-    for (( i = (( heapMaxIdx/2 )); i >= 1; i-- )); do
-        echo "$(maxHeapify $i $heapMaxIdx "${arr[@]}")"
-    done
+    echo "${arr[@]}"
 }
 
 
 heapSort() {
 
-    arr=("$@")
+    local arr=("$@")
     n=${#arr[@]}
-
     printArray "${arr[@]}"
-    echo "--------"
 
-    local heapMaxIdx=$n
-    local maxHeap=( $(buildMaxHeap "${arr[@]}") )
+    for (( i = $n; i >= 0; i-- )); do
+        arr=( $(heapify $n $i "${arr[@]}") )
+    done
 
-    for (( i = $n; i > 1; i-- )); do
+    echo "========="
+    printArray "${arr[@]}"
+    echo "========="
 
-        tmp=${arr[1]}
-        arr[1]=${arr[i]}
+    (( index = $n - 1 ))
+    for (( i = $index; i > 0; i-- )); do
+
+        tmp=${arr[0]}
+        arr[0]=${arr[i]}
         arr[i]=$tmp
 
-        (( heapMaxIdx-- ))
-        echo "$( maxHeapify 1 $heapMaxIdx "${maxHeap[@]}")"
+        local arr=( $(heapify $i 0 "${arr[@]}") )
     done
-    # printArray "${arr[@]}"
-}
 
+    printArray "${arr[@]}"
+}
 
 
 
