@@ -196,64 +196,186 @@ mergeSort() {
 
 
 
-heapify() {  # $1 -> n  $2 -> i   $3 ...  -> arr
-    local n=$1
-    local i=$2
-    local arr=("${@:3}")
-
-    local largest=$i
-
-    local l=$(( 2 * $i + 1 ))     # l = 2 * i + 1
-    local r=$(( 2 * $i + 2 ))  # r = 2 * i + 2
 
 
 
-    if [[ $l -lt $n && $(echo "${arr[$i]} < ${arr[$l]}" | bc -l) ]]; then
-        largest=$l
-    fi
 
-    if [[ $r -lt $n && $(echo "${arr[$largest]} < ${arr[$r]}" | bc -l) ]]; then
-        largest=$r
-    fi
 
-    if [[ $largest != $i ]]; then
-        tmp=${arr[largest]}
-        arr[largest]=${arr[i]}
-        arr[i]=$tmp
 
-        arr=( $(heapify $n $largest "${arr[@]}") )
-    fi
+
+# heapify() {  # $1 -> n  $2 -> i   $3 ...  -> arr
+#     local i=$2
+#     local arr=("${@:3}")
+#     local n=${#arr[@]}
+#
+#     local largest=$i
+#
+#     local l=$(( (2 * $i) + 1 ))
+#     local r=$(( (2 * $i) + 2 ))
+#
+#
+#     if [[ $l -lt $n && $(echo "${arr[$i]} < ${arr[$l]}" | bc -l) ]]; then
+#         largest=$l
+#     fi
+#
+#     if [[ $r -lt $n && $(echo "${arr[$largest]} < ${arr[$r]}" | bc -l) ]]; then
+#         largest=$r
+#     fi
+#
+#     if [[ $largest -ne $i ]]; then
+#         tmp=${arr[largest]}
+#         arr[largest]=${arr[i]}
+#         arr[i]=$tmp
+#
+#         arr=( $(heapify $n $largest "${arr[@]}") )
+#     fi
+#
+#     echo "${arr[@]}"
+# }
+#
+#
+# heapSort() {
+#
+#     local arr=("$@")
+#     local n=${#arr[@]}
+#     printArray "${arr[@]}"
+#
+#     for (( i = $n; i >= 0; i-- )); do
+#         arr=( $(heapify $n $i "${arr[@]}") )
+#     done
+#
+#     echo "========="
+#     printArray "${arr[@]}"
+#     echo "========="
+#
+#     (( index = $n - 1 ))
+#     for (( i = $index; i > 0; i-- )); do
+#
+#         tmp=${arr[0]}
+#         arr[0]=${arr[i]}
+#         arr[i]=$tmp
+#
+#         arr=( $(heapify $i 0 "${arr[@]}") )
+#     done
+#
+#     printArray "${arr[@]}"
+# }
+
+
+buildMaxHeap() {
+    n=$1
+    arr=("${@:2}")
+
+    echo "-------------------------------" >&2
+
+    for (( i = 0; i < $n; i++ )); do
+
+        echo "i --> $i" >&2
+        echo "-----------------" >&2
+
+        if [[ $i -ne 0 && 1 -eq `echo "${arr[$i]} > ${arr[$(( ( $i - 1 ) / 2 ))]}" | bc` ]]; then
+            j=$i
+
+            echo "arr[i] --> ${arr[$i]}" >&2
+            echo "arr[(i - 1) / 2] --> $(( ( $i - 1 ) / 2 )) ----> ${arr[$(( ( $i - 1 ) / 2 ))]}" >&2
+            echo "j --> $j" >&2
+            echo "-------" >&2
+
+
+
+            while [[ $j -ne 0 && 1 -eq `echo "${arr[$j]} > ${arr[$(( ( $j - 1 ) / 2 ))]}" | bc` ]]; do
+
+                echo "---" >&2
+
+                echo "j --> $j" >&2
+
+                echo "arr[j] --> ${arr[$j]}" >&2
+                echo "arr[(j - 1) / 2] --> $(( ( $j - 1 ) / 2 )) ----> ${arr[$(( ( $j - 1 ) / 2 ))]}" >&2
+
+
+                # x=`echo "$(( ( $j - 1 ) / 2 ))" | bc`
+                # echo "xx --> $x" >&2
+                # echo "arr $(( ( $j - 1 ) / 2 )) -> ${arr[$(( ( $j - 1 ) / 2 ))]}" >&2
+                #
+                # echo "Arr--> ${arr[@]}" >&2
+
+
+                tmp=${arr[j]}
+                arr[j]=${arr[$(( ( $j - 1 ) / 2 ))]}
+                arr[$(( ( $j - 1 ) / 2 ))]=$tmp
+
+                echo "arr[j] --> ${arr[$j]}" >&2
+                echo "arr[(j - 1) / 2] --> $(( ( $j - 1 ) / 2 )) ----> ${arr[$(( ( $j - 1 ) / 2 ))]}" >&2
+
+                (( j = ( $j - 1 ) / 2 ))
+                echo "j --> $j" >&2
+            done
+        fi
+    done
 
     echo "${arr[@]}"
 }
 
-
 heapSort() {
 
-    local arr=("$@")
+    arr=("${@:2}")
     n=${#arr[@]}
     printArray "${arr[@]}"
 
-    for (( i = $n; i >= 0; i-- )); do
-        arr=( $(heapify $n $i "${arr[@]}") )
-    done
+    arr=( $(buildMaxHeap $n "${arr[@]}") )
 
-    echo "========="
+    echo "--------x-x-x-x-x-x-x--------"
     printArray "${arr[@]}"
-    echo "========="
+    echo "--------x-x-x-x-x-x-x--------"
 
-    (( index = $n - 1 ))
-    for (( i = $index; i > 0; i-- )); do
+
+    for (( i = $(( $n - 1 )); i > 0; i-- )); do
 
         tmp=${arr[0]}
         arr[0]=${arr[i]}
         arr[i]=$tmp
 
-        local arr=( $(heapify $i 0 "${arr[@]}") )
+
+        j=0
+        while : ; do
+
+            (( index = 2 * $j + 1 ))
+
+
+
+
+            if [[ $index -lt  $(( $i - 1 )) && 1 -eq `echo "${arr[$index]} < ${arr[$(( $index + 1 ))]}" | bc` ]]; then
+                (( index = $index + 1 ))
+            fi
+
+            if [[ $index -lt $i && $(echo "${arr[$j]} < ${arr[$index]}" | bc -l) ]]; then
+
+                tmp=${arr[j]}
+                arr[j]=${arr[index]}
+                arr[index]=$tmp
+
+            fi
+
+            j=$index
+
+
+            [[ $index -lt $i ]] || break
+        done
     done
 
     printArray "${arr[@]}"
 }
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -293,7 +415,7 @@ else
                 1) insertionSort "${numbersArray[@]}" ;;
                 2) mergeSort $n "${numbersArray[@]}" > sortedRandom.txt ;;
                 3) #arrToSort=${numbersArray[@]}
-                   heapSort "${numbersArray[@]}" ;;
+                   heapSort $n "${numbersArray[@]}" ;;
                    #printArray "${arrToSort[@]}" ;;
                 4) quickSort "${numbersArray[@]}" ;;
                 5) countingSort "${numbersArray[@]}" ;;
