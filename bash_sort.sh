@@ -266,49 +266,18 @@ buildMaxHeap() {
     n=$1
     arr=("${@:2}")
 
-    echo "-------------------------------" >&2
+    for (( i = 1; i < $n; i++ )); do
 
-    for (( i = 0; i < $n; i++ )); do
-
-        echo "i --> $i" >&2
-        echo "-----------------" >&2
-
-        if [[ $i -ne 0 && 1 -eq `echo "${arr[$i]} > ${arr[$(( ( $i - 1 ) / 2 ))]}" | bc` ]]; then
+        if [[ 1 -eq `echo "${arr[$i]} > ${arr[$(( ( $i - 1 ) / 2 ))]}" | bc` ]]; then
             j=$i
 
-            echo "arr[i] --> ${arr[$i]}" >&2
-            echo "arr[(i - 1) / 2] --> $(( ( $i - 1 ) / 2 )) ----> ${arr[$(( ( $i - 1 ) / 2 ))]}" >&2
-            echo "j --> $j" >&2
-            echo "-------" >&2
-
-
-
-            while [[ $j -ne 0 && 1 -eq `echo "${arr[$j]} > ${arr[$(( ( $j - 1 ) / 2 ))]}" | bc` ]]; do
-
-                echo "---" >&2
-
-                echo "j --> $j" >&2
-
-                echo "arr[j] --> ${arr[$j]}" >&2
-                echo "arr[(j - 1) / 2] --> $(( ( $j - 1 ) / 2 )) ----> ${arr[$(( ( $j - 1 ) / 2 ))]}" >&2
-
-
-                # x=`echo "$(( ( $j - 1 ) / 2 ))" | bc`
-                # echo "xx --> $x" >&2
-                # echo "arr $(( ( $j - 1 ) / 2 )) -> ${arr[$(( ( $j - 1 ) / 2 ))]}" >&2
-                #
-                # echo "Arr--> ${arr[@]}" >&2
-
+            while [[ 1 -eq `echo "${arr[$j]} > ${arr[$(( ( $j - 1 ) / 2 ))]}" | bc` ]]; do
 
                 tmp=${arr[j]}
                 arr[j]=${arr[$(( ( $j - 1 ) / 2 ))]}
                 arr[$(( ( $j - 1 ) / 2 ))]=$tmp
 
-                echo "arr[j] --> ${arr[$j]}" >&2
-                echo "arr[(j - 1) / 2] --> $(( ( $j - 1 ) / 2 )) ----> ${arr[$(( ( $j - 1 ) / 2 ))]}" >&2
-
                 (( j = ( $j - 1 ) / 2 ))
-                echo "j --> $j" >&2
             done
         fi
     done
@@ -320,14 +289,8 @@ heapSort() {
 
     arr=("${@:2}")
     n=${#arr[@]}
-    printArray "${arr[@]}"
 
     arr=( $(buildMaxHeap $n "${arr[@]}") )
-
-    echo "--------x-x-x-x-x-x-x--------"
-    printArray "${arr[@]}"
-    echo "--------x-x-x-x-x-x-x--------"
-
 
     for (( i = $(( $n - 1 )); i > 0; i-- )); do
 
@@ -335,31 +298,29 @@ heapSort() {
         arr[0]=${arr[i]}
         arr[i]=$tmp
 
-
         j=0
-        while : ; do
+        index=0
+
+        while :
+        do
 
             (( index = 2 * $j + 1 ))
 
-
-
-
-            if [[ $index -lt  $(( $i - 1 )) && 1 -eq `echo "${arr[$index]} < ${arr[$(( $index + 1 ))]}" | bc` ]]; then
+            if [[ $index -lt $(( $i - 1 )) && 1 -eq `echo "${arr[$index]} < ${arr[$(( $index + 1 ))]}" | bc` ]]; then
                 (( index = $index + 1 ))
             fi
 
-            if [[ $index -lt $i && $(echo "${arr[$j]} < ${arr[$index]}" | bc -l) ]]; then
-
+            if [[ $index -lt $i && 1 -eq `echo "${arr[$j]} < ${arr[$index]}" | bc` ]]; then
                 tmp=${arr[j]}
                 arr[j]=${arr[index]}
                 arr[index]=$tmp
-
             fi
 
             j=$index
 
-
-            [[ $index -lt $i ]] || break
+            if [[ $index -ge $i ]]; then
+                break
+            fi
         done
     done
 
