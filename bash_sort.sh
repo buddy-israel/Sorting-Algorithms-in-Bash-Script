@@ -2,8 +2,6 @@
 
 # awk -v n=10 -v seed="$RANDOM" 'BEGIN { srand(seed); for (i=0; i<n; ++i) printf("%.2f\n", rand()*1000) }' > random.txt
 
-declare -a arrToSort
-
 printArray() {
     arr=("$@")
 
@@ -16,6 +14,8 @@ writeSortedArray() {
     arr=("$@")
     printf "%s\n" "${arr[@]}" > sortedRandom.txt
 }
+
+#===============================================================================
 
 insertionSort() {
 
@@ -34,6 +34,8 @@ insertionSort() {
 
     writeSortedArray "${arr[@]}"
 }
+
+#===============================================================================
 
 merge() {
 	left=2
@@ -70,6 +72,8 @@ mergeSort() {
 		echo $2
     fi
 }
+
+#===============================================================================
 
 buildMaxHeap() {
     n=$1
@@ -136,17 +140,148 @@ heapSort() {
     writeSortedArray "${arr[@]}"
 }
 
-quickSort() {
-    echo "quickSort"
+#===============================================================================
+
+partition() {
+
+    l=$l
+    h=$h
+    arr=("${@:3}")
+
+    (( i = $l - 1 ))
+    x=${arr[$h]}
+
+    echo "${arr[@]}" >&2
+    echo $i >&2
+    echo $x >&2
+    echo $l >&2
+    echo $h >&2
+
+
+    for (( j = $l; j < $h; j++ )); do
+
+        if [[ 1 -eq `echo "${arr[$j]} <= $x" | bc` ]]; then
+
+            # increment index of smaller element
+            ((i += 1))
+            tmp=${arr[j]}
+            arr[j]=${arr[i]}
+            arr[i]=$tmp
+
+        fi
+    done
+
+    # echo "-------------" >&2
+    # echo "${arr[@]}" >&2
+    # echo $i >&2
+
+    tmp=${arr[h]}
+    arr[h]=${arr[$(( $i + 1 ))]}
+    arr[$(( $i + 1 ))]=$tmp
+
+    # echo "-------------" >&2
+    # echo "${arr[@]}" >&2
+    # echo $i >&2
+    ((i += 1))
+    arr+=( $i )
+    echo "${arr[@]}"
 }
+
+quickSort() {
+
+    arr=("${@:2}")
+    l=0
+    (( h = $1 - 1 ))
+
+    # Create an auxiliary stack
+    (( size = $h - $l + 1 ))
+    for (( i = 0; i < $size ; i++ )); do
+        stack+=(0)
+    done
+
+    # initialize top of stack
+    top=-1
+    # push initial values of l and h to stack
+
+    ((top += 1))
+    stack[$top]=$l
+    ((top += 1))
+    stack[$top]=$h
+
+    # Keep popping from stack while is not empty
+
+    while(( $top>=0 )) ; do
+        echo "${arr[@]}"
+        echo "--------------------------------------------------"
+        # echo "${stack[@]}"
+
+        h=${stack[$top]}
+        ((top -= 1))
+        l=${stack[$top]}
+        ((top -= 1))
+
+        # echo $h
+        # echo $l
+        # echo $top
+
+        # Set pivot element at its correct position in
+        # sorted array
+        temp=( $( partition $l $h "${arr[@]}" ) )
+        echo "${temp[@]}"
+        p=${temp[${#temp[@]}-1]}
+        arr=( "${temp[@]:0:$size}" )
+        echo "------------------p-----------------"
+        echo "${arr[@]}"
+        echo $p
+
+        echo "---stack---top-----"
+        echo "${stack[@]}"
+        echo $top
+        # If there are elements on left side of pivot,
+        # then push left side to stack
+        if [[ $l -lt $(( $p - 1 )) ]]; then
+            ((top += 1))
+            stack[$top]=$l
+            ((top += 1))
+            stack[$top]=$(( $p - 1 ))
+        fi
+
+        echo "---stack---top-----"
+        echo "${stack[@]}"
+        echo $top
+
+        # If there are elements on right side of pivot,
+        # then push right side to stack
+        if [[ $h -gt $(( $p + 1 )) ]]; then
+            ((top += 1))
+            stack[$top]=$(( $p + 1 ))
+            ((top += 1))
+            stack[$top]=$h
+        fi
+
+        echo "---stack---top-----"
+        echo "${stack[@]}"
+        echo $top
+
+    done
+
+    echo "${arr[@]}"
+
+}
+
+#===============================================================================
 
 countingSort() {
     echo "countingSort"
 }
 
+#===============================================================================
+
 bucketSort() {
     echo "bucketSort"
 }
+
+#===============================================================================
 
 if [[ "$#" -ne 4 ]]; then
     if [[ ( "$#" -eq 1 )  && ( ( $1 = "-h" ) || ( $1 = "--help") ) ]] ; then
@@ -171,10 +306,8 @@ else
             case $4 in
                 1) insertionSort "${numbersArray[@]}" ;;
                 2) mergeSort $n "${numbersArray[@]}" > sortedRandom.txt ;;
-                3) #arrToSort=${numbersArray[@]}
-                   heapSort $n "${numbersArray[@]}" ;;
-                   #printArray "${arrToSort[@]}" ;;
-                4) quickSort "${numbersArray[@]}" ;;
+                3) heapSort $n "${numbersArray[@]}" ;;
+                4) quickSort $n "${numbersArray[@]}" ;;
                 5) countingSort "${numbersArray[@]}" ;;
                 6) bucketSort "${numbersArray[@]}" ;;
             esac
