@@ -151,11 +151,11 @@ partition() {
     (( i = $l - 1 ))
     x=${arr[$h]}
 
-    echo "${arr[@]}" >&2
-    echo $i >&2
-    echo $x >&2
-    echo $l >&2
-    echo $h >&2
+    # echo "${arr[@]}" >&2
+    # echo $i >&2
+    # echo $x >&2
+    # echo $l >&2
+    # echo $h >&2
 
 
     for (( j = $l; j < $h; j++ )); do
@@ -211,8 +211,8 @@ quickSort() {
     # Keep popping from stack while is not empty
 
     while(( $top>=0 )) ; do
-        echo "${arr[@]}"
-        echo "--------------------------------------------------"
+        # echo "${arr[@]}"
+        # echo "--------------------------------------------------"
         # echo "${stack[@]}"
 
         h=${stack[$top]}
@@ -227,16 +227,16 @@ quickSort() {
         # Set pivot element at its correct position in
         # sorted array
         temp=( $( partition $l $h "${arr[@]}" ) )
-        echo "${temp[@]}"
+        # echo "${temp[@]}"
         p=${temp[${#temp[@]}-1]}
         arr=( "${temp[@]:0:$size}" )
-        echo "------------------p-----------------"
-        echo "${arr[@]}"
-        echo $p
+        # echo "------------------p-----------------"
+        # echo "${arr[@]}"
+        # echo $p
 
-        echo "---stack---top-----"
-        echo "${stack[@]}"
-        echo $top
+        # echo "---stack---top-----"
+        # echo "${stack[@]}"
+        # echo $top
         # If there are elements on left side of pivot,
         # then push left side to stack
         if [[ $l -lt $(( $p - 1 )) ]]; then
@@ -246,9 +246,9 @@ quickSort() {
             stack[$top]=$(( $p - 1 ))
         fi
 
-        echo "---stack---top-----"
-        echo "${stack[@]}"
-        echo $top
+        # echo "---stack---top-----"
+        # echo "${stack[@]}"
+        # echo $top
 
         # If there are elements on right side of pivot,
         # then push right side to stack
@@ -259,14 +259,14 @@ quickSort() {
             stack[$top]=$h
         fi
 
-        echo "---stack---top-----"
-        echo "${stack[@]}"
-        echo $top
+        # echo "---stack---top-----"
+        # echo "${stack[@]}"
+        # echo $top
 
     done
 
-    echo "${arr[@]}"
-
+    # echo "${arr[@]}"
+    writeSortedArray "${arr[@]}"
 }
 
 #===============================================================================
