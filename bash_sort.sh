@@ -1,6 +1,8 @@
 #!/bin/bash
 
-# awk -v n=10 -v seed="$RANDOM" 'BEGIN { srand(seed); for (i=0; i<n; ++i) printf("%.2f\n", rand()*1000) }' > random.txt
+# awk -v n=10 -v seed="$RANDOM" 'BEGIN { srand(seed); for (i=0; i<n; ++i) printf("%.2f\n", rand()*1000) }' > randomRealNumbers.txt
+# awk -v n=20 -v max=100 'BEGIN{srand(); for (i=0; i<n; ++i) print int(rand()*(max+1))}' > randomIntegers.txt
+# awk -v n=20 -v seed="$RANDOM" 'BEGIN { srand(seed); for (i=0; i<n; ++i) printf("%.4f\n", rand()) }' > randomRealNumbers0-1.txt
 
 printArray() {
     arr=("$@")
@@ -25,14 +27,15 @@ insertionSort() {
     for((i=1;i<n;i++)) ; do
         j=$i-1
         temp=${arr[$i]}
-        while(( $j>=0 && $(echo "${arr[$j]} > $temp" |bc -l) )) ; do  #arr[j]>temp
+
+        while [[ $j -ge 0 && 1 -eq `echo "${arr[$j]} > $temp" | bc` ]]; do
             arr[$j+1]=${arr[$j]}
             j=$((j-1))
         done
         arr[j+1]=$temp
     done
 
-    writeSortedArray "${arr[@]}"
+    printf "%s\n" "${arr[@]}"
 }
 
 #===============================================================================
@@ -236,13 +239,65 @@ quickSort() {
 #===============================================================================
 
 countingSort() {
-    echo "countingSort"
+
+    arr=("${@:2}")
+    n=${#arr[@]}
+    max=100
+    (( m = $max + 1 ))
+
+    for (( i = 0; i < $m ; i++ )); do
+        count+=(0)
+    done
+
+    for i in "${arr[@]}" ; do
+        (( count[$i]++ ))
+    done
+
+    i=0
+    for (( a = 0; a < $m; a++ )); do
+        for (( c = 0; c < "${count[$a]}"; c++ )); do
+            arr[$i]=$a
+            (( i++ ))
+        done
+    done
+
+    writeSortedArray "${arr[@]}"
 }
 
 #===============================================================================
 
 bucketSort() {
-    echo "bucketSort"
+
+    n=$1
+    arr=("${@:2}")
+
+    slotNum=10
+    (( slot = $slotNum - 1 ))
+    eval rm -rf tempFiles
+    eval mkdir tempFiles
+    eval touch tempFiles/file.{0..$slot}.txt
+
+    for j in "${arr[@]}" ; do
+        floatIndex=`echo "$j * $slotNum" | bc | awk '{printf "%f", $0}'`
+        index=${floatIndex%.*}
+        printf "%s\n" $j >> tempFiles/file.$index.txt
+    done
+
+
+    for (( i = 0; i < $slotNum; i++ )); do
+        tempArray=()
+        while IFS='' read -r line || [[ -n "$line" ]]; do
+            tempArray+=( "$line" )
+        done < "tempFiles/file.$i.txt"
+
+        insertionSort "${tempArray[@]}" > tempFiles/file.$i.txt &
+        wait
+    done
+
+
+    for (( i = 0; i < $slotNum; i++ )); do
+        cat tempFiles/file.$i.txt >> sortedRandom.txt
+    done
 }
 
 #===============================================================================
@@ -268,11 +323,11 @@ else
             n=${#numbersArray[@]}
 
             case $4 in
-                1) insertionSort "${numbersArray[@]}" ;;
+                1) insertionSort "${numbersArray[@]}" > sortedRandom.txt ;;
                 2) mergeSort $n "${numbersArray[@]}" > sortedRandom.txt ;;
                 3) heapSort $n "${numbersArray[@]}" ;;
                 4) quickSort $n "${numbersArray[@]}" ;;
-                5) countingSort "${numbersArray[@]}" ;;
+                5) countingSort $n "${numbersArray[@]}" ;;
                 6) bucketSort "${numbersArray[@]}" ;;
             esac
         fi

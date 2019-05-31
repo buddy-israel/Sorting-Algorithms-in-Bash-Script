@@ -1,123 +1,19 @@
-# Python program for implementation of Quicksort
+def counting_sort(array, maxval):
+    """in-place counting sort"""
+    n = len(array)
+    m = maxval + 1
+    count = [0] * m               # init with zeros
+    for a in array:
+        count[a] += 1             # count occurences
 
-# This function is same in both iterative and recursive
-def partition(arr,l,h):
-    i = ( l - 1 )
-    x = arr[h]
-
-    print(arr)
-    print("i:" + str(i))
-    print("x:" + str(x))
-    print("l:" + str(l))
-    print("h:" + str(h))
-
-    # print("WWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWW")
-    for j in range(l , h):
-        if   arr[j] <= x:
-
-            # increment index of smaller element
-            i = i+1
-            arr[i],arr[j] = arr[j],arr[i]
-
-    # print(arr)
-    # print(i)
-
-    arr[i+1],arr[h] = arr[h],arr[i+1]
-    # print("-----")
-    # print(arr)
-    # print(i)
-    # print("WWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWW")
-    return (i+1)
-
-# Function to do Quick sort
-# arr[] --> Array to be sorted,
-# l  --> Starting index,
-# h  --> Ending index
-def quickSortIterative(arr,l,h):
-
-    # Create an auxiliary stack
-    size = h - l + 1
-    stack = [0] * (size)
-    # initialize top of stack
-    top = -1
-
-    # push initial values of l and h to stack
-    top = top + 1
-    stack[top] = l
-    top = top + 1
-    stack[top] = h
-
-    print("---------------")
-    # Keep popping from stack while is not empty
-    while top >= 0:
-        print(arr)
-        print("--------------------------------------------------")
-        # print("----xxx----")
-        # print("--------")
-        #
-        # print(h)
-        # print(l)
-        # print(top)
-        # print("--------")
-
-        # Pop h and l
-        h = stack[top]
-        top = top - 1
-        l = stack[top]
-        top = top - 1
-        # print(h)
-        # print(l)
-        # print(top)
-        # print("--------")
-        # print("--------")
-
-        # Set pivot element at its correct position in
-        # sorted array
-        p = partition( arr, l, h )
-        print("------------------p-----------------")
-        print(arr)
-        print(p)
-
-        print("---stack---top-----")
-        print(stack)
-        print(top)
-
-        # If there are elements on left side of pivot,
-        # then push left side to stack
-        if p-1 > l:
-            top = top + 1
-            stack[top] = l
-            top = top + 1
-            stack[top] = p - 1
-
-        print("---stack---top-----")
-        print(stack)
-        print(top)
-
-        # If there are elements on right side of pivot,
-        # then push right side to stack
-        if p+1 < h:
-            top = top + 1
-            stack[top] = p + 1
-            top = top + 1
-            stack[top] = h
-
-        print("---stack---top-----")
-        print(stack)
-        print(top)
-
-# Driver code to test above
-arr = [409.24,
-252.04,
-614.98,
-374.17,
-185.35,
-833.71,
-540.89,
-506.33,
-337.06,
-553.38]
-n = len(arr)
-quickSortIterative(arr, 0, n-1)
-print ("Sorted array is:")
-print(arr)
+    i = 0
+    for a in range(m):            # emit
+        for c in range(count[a]): # - emit 'count[a]' copies of 'a'
+            # print(a)
+            array[i] = a
+            i += 1
+        # print("-------------")
+    return array
+# arr = [92, 97, 68, 49, 44, 58, 81, 55, 64, 52, 48, 41, 69, 66, 39, 38, 23, 71, 52, 71]
+arr = [67, 66, 85, 46, 49, 15, 32, 64, 92, 72, 50, 8, 27, 5, 44, 36, 30, 17, 78, 40, 76, 97, 44, 99, 17, 1, 16, 74, 79, 76, 48, 45, 41, 33, 91, 90, 48, 23, 54, 39, 96, 4, 48, 22, 9, 93, 59, 40, 9, 36, 80, 85, 32, 24, 84, 50, 25, 0, 23, 3, 76, 72, 48, 17, 4, 39, 6, 53, 62, 61, 92, 57, 65, 40, 80, 75, 33, 38, 14, 42, 75, 94, 27, 7, 17, 10, 57, 42, 10, 81, 46, 87, 52, 95, 3, 56, 33, 10, 9, 96]
+print(counting_sort( arr, 100 ))
