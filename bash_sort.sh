@@ -242,7 +242,7 @@ countingSort() {
 
     arr=("${@:2}")
     n=${#arr[@]}
-    max=100
+    max=1000
     (( m = $max + 1 ))
 
     for (( i = 0; i < $m ; i++ )); do
@@ -294,19 +294,37 @@ bucketSort() {
         wait
     done
 
-
+    eval touch sortedRandom.txt
     for (( i = 0; i < $slotNum; i++ )); do
         cat tempFiles/file.$i.txt >> sortedRandom.txt
     done
+
+    eval rm -rf tempFiles
+}
+
+#===============================================================================
+
+printUsageStatement() {
+
+    echo "  ./bash_sort: missing argument.
+        Usage: ./bash_sort –f | --filename <input filename> -a | --algorithm <sorting algorithm> [-h | --help]
+        Try './bash_sort --help' for more information."
+}
+
+printUsageStatement2() {
+
+    echo "  ./bash_sort: wrong argument or missing file.
+        Usage: ./bash_sort –f | --filename <input filename> -a | --algorithm <sorting algorithm> [-h | --help]
+        Try './bash_sort --help' for more information."
 }
 
 #===============================================================================
 
 if [[ "$#" -ne 4 ]]; then
     if [[ ( "$#" -eq 1 )  && ( ( $1 = "-h" ) || ( $1 = "--help") ) ]] ; then
-        echo "Help"
+        cat help.txt
     else
-        echo "Usage statement"
+        printUsageStatement
     fi
 else
     # Check $1 is -f or --filename and $2 is exist and readable file.
@@ -330,6 +348,10 @@ else
                 5) countingSort $n "${numbersArray[@]}" ;;
                 6) bucketSort "${numbersArray[@]}" ;;
             esac
+        else
+            printUsageStatement2
         fi
+    else
+        printUsageStatement2
     fi
 fi

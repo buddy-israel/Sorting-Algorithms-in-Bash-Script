@@ -1,0 +1,13 @@
+Usage: ./bash_sort –f | --filename <input filename> -a | --algorithm <sorting algorithm> [-h | --help]
+
+Sorts the given files, which contains floating points, with selected sorting algorithm. And writes result to new file called sorted.txt
+
+-a, --algorithm         Specifies the sorting algorithm, which should be continue with one of the following algorithms:
+                            (1) -> Insertion Sort
+                            (2) -> Merge Sort
+                            (3) -> Heap Sort
+                            (4) -> Quick Sort
+                            (5) -> Counting Sort
+                            (6) -> Bucket Sort
+
+-f, --filename         Specifies the file which is going the sorted, which should be continue with filename.
