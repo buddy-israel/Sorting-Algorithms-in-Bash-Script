@@ -14,7 +14,7 @@ printArray() {
 
 writeSortedArray() {
     arr=("$@")
-    printf "%s\n" "${arr[@]}" > sortedRandom.txt
+    printf "%s\n" "${arr[@]}" > sorted.txt
 }
 
 #===============================================================================
@@ -294,9 +294,9 @@ bucketSort() {
         wait
     done
 
-    eval touch sortedRandom.txt
+    eval touch sorted.txt
     for (( i = 0; i < $slotNum; i++ )); do
-        cat tempFiles/file.$i.txt >> sortedRandom.txt
+        cat tempFiles/file.$i.txt >> sorted.txt
     done
 
     eval rm -rf tempFiles
@@ -341,8 +341,8 @@ else
             n=${#numbersArray[@]}
 
             case $4 in
-                1) insertionSort "${numbersArray[@]}" > sortedRandom.txt ;;
-                2) mergeSort $n "${numbersArray[@]}" > sortedRandom.txt ;;
+                1) insertionSort "${numbersArray[@]}" > sorted.txt ;;
+                2) mergeSort $n "${numbersArray[@]}" > sorted.txt ;;
                 3) heapSort $n "${numbersArray[@]}" ;;
                 4) quickSort $n "${numbersArray[@]}" ;;
                 5) countingSort $n "${numbersArray[@]}" ;;
