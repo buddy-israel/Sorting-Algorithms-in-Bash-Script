@@ -92,6 +92,8 @@ for (( i = 6; i > 0; i-- )); do
             elapsed="$(bc <<<"$end_time-$start_time")"
             echo "Total of $elapsed seconds elapsed for $i with RealNumber_1000000"
 
+            echo "----------------------"
+
         ;;
     esac
 done
