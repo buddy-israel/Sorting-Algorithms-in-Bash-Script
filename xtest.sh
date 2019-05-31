@@ -251,25 +251,3 @@ elapsed="$(bc <<<"$end_time-$start_time")"
 echo "Total of $elapsed seconds elapsed for 1 with RealNumber_10000"
 
 echo "----------------------"
-
-
-
-start_time="$(date -u +%s.%N)"
-./bash_sort.sh -f RealNumber_100000.txt -a $i
-end_time="$(date -u +%s.%N)"
-
-elapsed="$(bc <<<"$end_time-$start_time")"
-echo "Total of $elapsed seconds elapsed for 1 with RealNumber_100000"
-
-echo "----------------------"
-
-
-
-start_time="$(date -u +%s.%N)"
-./bash_sort.sh -f RealNumber_1000000.txt -a $i
-end_time="$(date -u +%s.%N)"
-
-elapsed="$(bc <<<"$end_time-$start_time")"
-echo "Total of $elapsed seconds elapsed for 1 with RealNumber_1000000"
-
-echo "----------------------"
