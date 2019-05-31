@@ -1,6 +1,6 @@
 #!/bin/bash
 
-for (( i = 6; i > 0; i-- )); do
+for (( i = 6; i > 1; i-- )); do
 
     case $i in
         5)
@@ -44,7 +44,7 @@ done
 echo "--------------------------------------------------"
 
 
-for (( i = 6; i > 0; i-- )); do
+for (( i = 6; i > 1; i-- )); do
 
     case $i in
         5)
@@ -89,7 +89,7 @@ echo "--------------------------------------------------"
 
 
 
-for (( i = 6; i > 0; i-- )); do
+for (( i = 6; i > 1; i-- )); do
 
     case $i in
         5)
@@ -133,7 +133,7 @@ done
 echo "--------------------------------------------------"
 
 
-for (( i = 6; i > 0; i-- )); do
+for (( i = 6; i > 1; i-- )); do
 
     case $i in
         5)
@@ -178,7 +178,7 @@ done
 echo "--------------------------------------------------"
 
 
-for (( i = 6; i > 0; i-- )); do
+for (( i = 6; i > 1; i-- )); do
 
     case $i in
         5)
@@ -218,3 +218,58 @@ for (( i = 6; i > 0; i-- )); do
         ;;
     esac
 done
+
+
+echo "--------------------------------------------------"
+
+
+start_time="$(date -u +%s.%N)"
+./bash_sort.sh -f RealNumber_100.txt -a $i
+end_time="$(date -u +%s.%N)"
+
+elapsed="$(bc <<<"$end_time-$start_time")"
+echo "Total of $elapsed seconds elapsed for 1 with RealNumber_100"
+
+echo "----------------------"
+
+
+start_time="$(date -u +%s.%N)"
+./bash_sort.sh -f RealNumber_1000.txt -a $i
+end_time="$(date -u +%s.%N)"
+
+elapsed="$(bc <<<"$end_time-$start_time")"
+echo "Total of $elapsed seconds elapsed for 1 with RealNumber_1000"
+
+echo "----------------------"
+
+
+start_time="$(date -u +%s.%N)"
+./bash_sort.sh -f RealNumber_10000.txt -a $i
+end_time="$(date -u +%s.%N)"
+
+elapsed="$(bc <<<"$end_time-$start_time")"
+echo "Total of $elapsed seconds elapsed for 1 with RealNumber_10000"
+
+echo "----------------------"
+
+
+
+start_time="$(date -u +%s.%N)"
+./bash_sort.sh -f RealNumber_100000.txt -a $i
+end_time="$(date -u +%s.%N)"
+
+elapsed="$(bc <<<"$end_time-$start_time")"
+echo "Total of $elapsed seconds elapsed for 1 with RealNumber_100000"
+
+echo "----------------------"
+
+
+
+start_time="$(date -u +%s.%N)"
+./bash_sort.sh -f RealNumber_1000000.txt -a $i
+end_time="$(date -u +%s.%N)"
+
+elapsed="$(bc <<<"$end_time-$start_time")"
+echo "Total of $elapsed seconds elapsed for 1 with RealNumber_1000000"
+
+echo "----------------------"

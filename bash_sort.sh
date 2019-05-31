@@ -272,7 +272,7 @@ bucketSort() {
     n=$1
     arr=("${@:2}")
 
-    slotNum=10
+    slotNum=1000
     (( slot = $slotNum - 1 ))
     eval rm -rf tempFiles
     eval mkdir tempFiles
