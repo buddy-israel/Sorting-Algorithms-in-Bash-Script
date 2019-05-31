@@ -250,6 +250,7 @@ countingSort() {
     done
 
     for i in "${arr[@]}" ; do
+
         (( count[$i]++ ))
     done
 
