@@ -5,14 +5,11 @@ partition() {
     l=$l
     h=$h
     arr=("${@:3}")
-
     (( i = $l - 1 ))
     x=${arr[$h]}
 
     for (( j = $l; j < $h; j++ )); do
-
         if [[ 1 -eq `echo "${arr[$j]} <= $x" | bc` ]]; then
-
             # increment index of smaller element
             ((i += 1))
             tmp=${arr[j]}
@@ -21,11 +18,9 @@ partition() {
 
         fi
     done
-
     tmp=${arr[h]}
     arr[h]=${arr[$(( $i + 1 ))]}
     arr[$(( $i + 1 ))]=$tmp
-
     ((i += 1))
     arr+=( $i )
     echo "${arr[@]}"
@@ -53,21 +48,18 @@ quickSort() {
     stack[$top]=$h
 
     # Keep popping from stack while is not empty
-
     while(( $top>=0 )) ; do
 
         h=${stack[$top]}
         ((top -= 1))
         l=${stack[$top]}
         ((top -= 1))
-
         # Set pivot element at its correct position in
         # sorted array
         temp=( $( partition $l $h "${arr[@]}" ) )
         # echo "${temp[@]}"
         p=${temp[${#temp[@]}-1]}
         arr=( "${temp[@]:0:$size}" )
-
         # If there are elements on left side of pivot,
         # then push left side to stack
         if [[ $l -lt $(( $p - 1 )) ]]; then
@@ -76,7 +68,6 @@ quickSort() {
             ((top += 1))
             stack[$top]=$(( $p - 1 ))
         fi
-
         # If there are elements on right side of pivot,
         # then push right side to stack
         if [[ $h -gt $(( $p + 1 )) ]]; then
@@ -85,9 +76,7 @@ quickSort() {
             ((top += 1))
             stack[$top]=$h
         fi
-
     done
-
     printf "%s\n" "${arr[@]}" > sorted.txt
 }
 

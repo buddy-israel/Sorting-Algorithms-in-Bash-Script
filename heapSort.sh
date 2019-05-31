@@ -55,7 +55,6 @@ heapSort() {
             fi
 
             j=$index
-
             if [[ $index -ge $i ]]; then
                 break
             fi

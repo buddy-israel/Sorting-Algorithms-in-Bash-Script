@@ -1,0 +1,39 @@
+Total of 1.933244444 seconds elapsed for 6 with RealNumber_0-1_100
+----------------------
+Total of .042109685 seconds elapsed for 5 with Integer_100
+----------------------
+Total of 1.095495034 seconds elapsed for 4 with RealNumber_100
+----------------------
+Total of 1.577293034 seconds elapsed for 3 with RealNumber_100
+----------------------
+Total of 1.104046262 seconds elapsed for 2 with RealNumber_100
+----------------------
+Total of 4.372321787 seconds elapsed for 1 with RealNumber_100
+--------------------------------------------------
+Total of 4.774284426 seconds elapsed for 6 with RealNumber_0-1_1000
+----------------------
+Total of .080700276 seconds elapsed for 5 with Integer_1000
+----------------------
+Total of 22.838956477 seconds elapsed for 4 with RealNumber_1000
+----------------------
+Total of 25.856046639 seconds elapsed for 3 with RealNumber_1000
+----------------------
+Total of 17.142054726 seconds elapsed for 2 with RealNumber_1000
+----------------------
+Total of 321.657524195 seconds elapsed for 1 with RealNumber_1000
+--------------------------------------------------
+Total of 85.463014818 seconds elapsed for 6 with RealNumber_0-1_10000
+----------------------
+Total of .983774892 seconds elapsed for 5 with Integer_10000
+----------------------
+Total of 1330.107297198 seconds elapsed for 4 with RealNumber_10000
+----------------------
+Total of 445.946090992 seconds elapsed for 3 with RealNumber_10000
+----------------------
+Total of 499.127331219 seconds elapsed for 2 with RealNumber_10000
+----------------------
+--------------------------------------------------
+Total of 12024.375752560 seconds elapsed for 6 with RealNumber_0-1_100000
+----------------------
+Total of 41.766151130 seconds elapsed for 5 with Integer_100000
+....
